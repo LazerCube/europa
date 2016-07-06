@@ -21,8 +21,10 @@ BASE_DIR = join(HOME_DIR, 'myproject')
 SUPERVISOR_CONFIG = '/etc/supervisor'
 NGINX_CONFIG = '/etc/nginx'
 
-CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-ORIGIN_DIR = os.path.sep.join(CURRENT_DIR.split(os.path.sep)[:-1])
+# CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+# ORIGIN_DIR = os.path.sep.join(CURRENT_DIR.split(os.path.sep)[:-1])
+
+ORIGIN_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def upgrade_system():
     sudo('apt-get update -y')
@@ -39,7 +41,7 @@ def remove_software():
     sudo('apt-get purge -y git nginx python-dev python-pip supervisor')
     sudo('apt-get autoremove')
 
-def install_myproject(origin):
+def install_myproject(origin=ORIGIN_DIR):
     run('git clone -b master {0} {1}'.format(origin, BASE_DIR))
     run('mkdir {0}'.format(join(BASE_DIR, 'logs')))
 
@@ -58,7 +60,7 @@ def remove_virtualenv():
 
 def deploy_requirements():
     with prefix('workon myproject'):
-        run('pip install -r {0}'.format(join(BASE_DIR, 'requirements/production.txt')))
+        run('pip install -r {0}'.format(join(BASE_DIR, ,'requirements/_base.txt'))) #should pick based on env
 
 def deploy_gunicorn(settings=None, secret_key=None):
     if settings:
