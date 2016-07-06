@@ -4,10 +4,7 @@
 # SQLite3 database
 *.sqlite3
 
-# Node modules
-node_modules/
-
 # ignore folder
 projectenv/
-static/
+compiled_static/
 media/
