@@ -1,7 +1,8 @@
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CURRENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.sep.join(CURRENT_DIR.split(os.path.sep)[:-1])
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'vgoaax_+&_%jg&x#1+k*_bt#q4$fzo2f9f3#zyx7ci2n4w^&ab'
