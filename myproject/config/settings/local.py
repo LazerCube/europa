@@ -1,7 +1,11 @@
 import os
-from settings._base import *
+from _base import *
 
 DEBUG = True
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+) #specifies all the folders on your system where Django should look for static files
 
 STATIC_ROOT = (os.path.join(BASE_DIR, 'compiled_static'))
 STATIC_URL = '/static/'
