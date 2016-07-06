@@ -38,7 +38,7 @@ def install_software():
 def remove_software():
     run('rm -rf {0}'.format(join(HOME_DIR, '.bash_profile')))
     sudo('pip uninstall virtualenvwrapper')
-    sudo('apt-get purge -y git nginx python-dev python-pip supervisor')
+    sudo('apt-get purge -y nginx python-dev python-pip supervisor')
     sudo('apt-get autoremove')
 
 def install_myproject(origin=ORIGIN_DIR):
