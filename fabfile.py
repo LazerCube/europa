@@ -21,9 +21,6 @@ BASE_DIR = join(HOME_DIR, 'myproject')
 SUPERVISOR_CONFIG = '/etc/supervisor'
 NGINX_CONFIG = '/etc/nginx'
 
-# CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-# ORIGIN_DIR = os.path.sep.join(CURRENT_DIR.split(os.path.sep)[:-1])
-
 ORIGIN_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def upgrade_system():
