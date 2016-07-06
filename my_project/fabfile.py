@@ -5,7 +5,7 @@ from fabric.contrib.files import append
 
 import os
 
-env.hosts = ['example.com']
+env.hosts = ['localhost']
 env.user = 'ubuntu'
 
 ORIGIN_DIR = os.path.dirname(os.path.realpath(__file__))
