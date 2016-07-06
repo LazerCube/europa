@@ -3,9 +3,12 @@ from posixpath import join
 from fabric.api import cd, env, prefix, run, sudo
 from fabric.contrib.files import append
 
+import os
+
 env.hosts = ['example.com']
 env.user = 'ubuntu'
 
+ORIGIN_DIR = os.path.dirname(os.path.realpath(__file__))
 HOME_DIR = '/home/ubuntu'
 BASE_DIR = join(HOME_DIR, 'myproject')
 SUPERVISOR_CONFIG = '/etc/supervisor'
@@ -83,7 +86,7 @@ def manage(command=''):
     with prefix('workon myproject'):
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), command))
 
-def full_install(origin, settings=None, secret_key=None):
+def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
     upgrade_system()
     install_software()
     install_myproject(origin)
