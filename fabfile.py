@@ -60,6 +60,7 @@ def deploy_requirements():
         run('pip install -r {0}'.format(join(BASE_DIR,'requirements/production.txt'))) #should pick based on env
 
 def deploy_gunicorn(settings=None, secret_key=None):
+    sudo('chmod u+x {0}'.format(join(BASE_DIR, 'bin/gunicorn_start')))
     if settings:
         append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'myproject.config.settings.{0}\''.format(settings))
     if secret_key:
