@@ -1,0 +1,22 @@
+#!/bin/bash
+
+BASH_PROFILE=/home/ubuntu/.bash_profile
+DJANGO_DIR=/home/ubuntu/myproject/myproject
+WSGI_MODULE=myproject.wsgi
+USER=ubuntu
+GROUP=ubuntu
+ADDRESS=localhost:8000
+NUM_WORKERS=3
+LOG_FILE=/home/ubuntu/myproject/logs/gunicorn.log
+LOG_LEVEL=debug
+
+cd $DJANGO_DIR
+source $BASH_PROFILE
+workon myproject
+exec gunicorn $WSGI_MODULE \
+  --user=$USER \
+  --group=$GROUP \
+  --bind=$ADDRESS \
+  --workers=$NUM_WORKERS \
+  --log-file=$LOG_FILE \
+  --log-level=$LOG_LEVEL

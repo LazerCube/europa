@@ -1,0 +1,3 @@
+```
+sudo aptitude install fabric
+```
