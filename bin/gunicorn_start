@@ -1,30 +1,49 @@
 #!/bin/bash
+#
+# description "Gunicorn daemon for Django project"
+#
+# start on (local-filesystems and net-device-up IFACE=eth0)
+# stop on runlevel [!12345]
+#
+# BASH_PROFILE=/home/ubuntu/.bash_profile
+# DJANGO_DIR=/home/ubuntu/myproject/myproject
+# WSGI_MODULE=myproject.wsgi
+# USER=ubuntu
+# GROUP=ubuntu
+# ADDRESS=localhost:2550
+# NUM_WORKERS=3
+# LOG_FILE=/home/ubuntu/myproject/logs/gunicorn.log
+# LOG_LEVEL=debug
+#
+# # If the process quits unexpectedly trigger a respawn
+# respawn
+#
+# cd $DJANGO_DIR
+# source $BASH_PROFILE
+# workon myproject
+# exec gunicorn $WSGI_MODULE \
+#   --user=$USER \
+#   --group=$GROUP \
+#   --bind=$ADDRESS \
+#   --workers=$NUM_WORKERS \
+#   --log-file=$LOG_FILE \
+#   --log-level=$LOG_LEVEL
 
 description "Gunicorn daemon for Django project"
 
 start on (local-filesystems and net-device-up IFACE=eth0)
 stop on runlevel [!12345]
 
-BASH_PROFILE=/home/ubuntu/.bash_profile
-DJANGO_DIR=/home/ubuntu/myproject/myproject
-WSGI_MODULE=myproject.wsgi
-USER=ubuntu
-GROUP=ubuntu
-ADDRESS=localhost:80
-NUM_WORKERS=3
-LOG_FILE=/home/ubuntu/myproject/logs/gunicorn.log
-LOG_LEVEL=debug
-
 # If the process quits unexpectedly trigger a respawn
 respawn
 
-cd $DJANGO_DIR
-source $BASH_PROFILE
-workon myproject
-exec gunicorn $WSGI_MODULE \
-  --user=$USER \
-  --group=$GROUP \
-  --bind=$ADDRESS \
-  --workers=$NUM_WORKERS \
-  --log-file=$LOG_FILE \
-  --log-level=$LOG_LEVEL
+setuid ubuntu
+setgid ubuntu
+chdir /home/ubuntu
+
+exec gunicorn \
+    --name=django_project \
+    --pythonpath=django_project \
+    --bind=0.0.0.0:9000 \
+    --config /etc/gunicorn.d/gunicorn.py \
+    django_project.wsgi:application
