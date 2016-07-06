@@ -16,11 +16,13 @@ def remote():
     env.run = run
     env.hosts = ['some.remote.host']
 
-ORIGIN_DIR = os.path.dirname(os.path.realpath(__file__))
 HOME_DIR = '/home/ubuntu'
 BASE_DIR = join(HOME_DIR, 'myproject')
 SUPERVISOR_CONFIG = '/etc/supervisor'
 NGINX_CONFIG = '/etc/nginx'
+
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+ORIGIN_DIR = os.path.sep.join(CURRENT_DIR.split(os.path.sep)[:-1])
 
 def upgrade_system():
     sudo('apt-get update -y')

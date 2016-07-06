@@ -6,6 +6,12 @@
 sudo aptitude install fabric
 ```
 
+### Using fabric
+
+```
+fab <localhost/remote> <full_install/full_upgrade/full_upgrade>
+```
+
 ## SSH
 ```
 sudo apt-get update
