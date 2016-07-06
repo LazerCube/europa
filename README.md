@@ -64,5 +64,5 @@ service ssh restart
 
 ```
 adduser ubuntu
-gpasswd -a ubuntu sudo
+gpasswd -a demo sudo
 ```
