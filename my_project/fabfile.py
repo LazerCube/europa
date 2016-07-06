@@ -1,12 +1,20 @@
 from posixpath import join
 
-from fabric.api import cd, env, prefix, run, sudo
+from fabric.operations import local as lrun, run
+from fabric.api import cd, env, prefix, sudo
 from fabric.contrib.files import append
 
 import os
 
-env.hosts = ['localhost']
 env.user = 'ubuntu'
+
+def localhost():
+    env.run = lrun
+    env.hosts = ['localhost']
+
+def remote():
+    env.run = run
+    env.hosts = ['some.remote.host']
 
 ORIGIN_DIR = os.path.dirname(os.path.realpath(__file__))
 HOME_DIR = '/home/ubuntu'
