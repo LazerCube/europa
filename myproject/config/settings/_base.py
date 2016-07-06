@@ -28,7 +28,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'urls'
 STATIC_TEMPLATES = (os.path.join(BASE_DIR, 'templates/'))
 
 TEMPLATES = [

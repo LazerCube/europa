@@ -16,7 +16,7 @@ fab <localhost/remote> <full_install/full_upgrade/full_upgrade>
 ```
 sudo apt-get update
 sudo apt-get install openssh-server
-sudo ufw allow 25000
+sudo ufw allow 22/2500
 ```
 
 ### Configure SSH
@@ -63,6 +63,6 @@ service ssh restart
 ## Creating new user
 
 ```
-adduser ubuntu
-gpasswd -a demo sudo
+sudo adduser ubuntu
+sudo gpasswd -a ubuntu sudo
 ```
