@@ -1,7 +1,7 @@
 #!/bin/bash
 NAME="myproject"
 DJANGO_DIR=/home/ubuntu/myproject/myproject
-SOCKFILE=/hom/hubuntu/myproject/run/gunicorn.sock
+SOCKFILE=/home/hubuntu/myproject/run/gunicorn.sock
 BASH_PROFILE=/home/ubuntu/.bash_profile
 USER=ubuntu
 GROUP=ubuntu
