@@ -58,3 +58,11 @@ PermitRootLogin no
 ```
 service ssh restart
 ```
+
+
+## Creating new user
+
+```
+adduser ubuntu
+gpasswd -a ubuntu sudo
+```
