@@ -60,15 +60,15 @@ def remove_virtualenv():
 
 def deploy_requirements():
     with prefix('workon myproject'):
-        run('pip install -r {0}'.format(join(BASE_DIR,'requirements/_base.txt'))) #should pick based on env
+        run('pip install -r {0}'.format(join(BASE_DIR,'requirements/production.txt'))) #should pick based on env
 
 def deploy_gunicorn(settings=None, secret_key=None):
     if settings:
-        append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'myproject.settings.{0}\''.format(settings))
+        append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'myproject.config.settings.{0}\''.format(settings))
     if secret_key:
         append(join(HOME_DIR, '.bash_profile'), 'export SECRET_KEY=\'{0}\''.format(secret_key))
     with prefix('workon myproject'):
-        run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'syncdb'))
+        run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'migrate'))
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'collectstatic'))
 
 def deploy_supervisor():
