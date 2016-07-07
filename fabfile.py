@@ -93,7 +93,8 @@ def deploy_nginx():
     sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-enabled/default')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/nginx.conf'), join(NGINX_CONFIG, 'sites-available/myproject')))
     sudo('sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled')
-    sudo('nginx -s reload')
+    sudo('sudo nginx -t')
+    sudo('sudo systemctl restart nginx')
 
 def reboot():
     print('::Rebooting to apply new changes...')
