@@ -3,7 +3,7 @@ Description=gunicorn daemon
 Requires=gunicorn.socket
 After=network.target
 
-[Service]cd
+[Service]
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/myproject/myproject

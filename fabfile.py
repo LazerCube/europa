@@ -20,7 +20,6 @@ PROJECT_NAME = 'myproject'
 HOME_DIR = '/home/ubuntu'
 BASE_DIR = join(HOME_DIR, 'myproject')
 
-SUPERVISOR_CONFIG = '/etc/supervisor'
 NGINX_CONFIG = '/etc/nginx'
 SYSTEMD_CONFIG = '/etc/systemd/system'
 
@@ -72,7 +71,9 @@ def deploy_requirements():
 
 def deploy_gunicorn(settings=None, secret_key=None):
     sudo('rm -rf {0}'.format(join(SYSTEMD_CONFIG, 'gunicorn.service')))
+    sudo('rm -rf {0}'.format(join(SYSTEMD_CONFIG, 'gunicorn.socket')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'bin/gunicorn.service'), join(SYSTEMD_CONFIG, 'gunicorn.service')))
+    sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'bin/gunicorn.socket'), join(SYSTEMD_CONFIG, 'gunicorn.socket')))
     if settings:
         append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'myproject.config.settings.{0}\''.format(settings))
     if secret_key:
@@ -82,11 +83,6 @@ def deploy_gunicorn(settings=None, secret_key=None):
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'collectstatic'))
         sudo('systemctl start gunicorn')
         sudo('systemctl enable gunicorn')
-
-def deploy_supervisor():
-    sudo('rm -rf {0}'.format(join(SUPERVISOR_CONFIG, 'conf.d/myproject.conf')))
-    sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/supervisord.conf'), join(SUPERVISOR_CONFIG, 'conf.d/myproject.conf')))
-    sudo('supervisorctl update')
 
 def deploy_nginx():
     sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-available/myproject')))
@@ -126,7 +122,6 @@ def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
     create_virtualenv()
     deploy_requirements()
     deploy_gunicorn(settings, secret_key)
-    #deploy_supervisor()
     deploy_nginx()
     start()
 
@@ -142,7 +137,6 @@ def full_upgrade(settings=None, secret_key=None):
     upgrade_myproject()
     deploy_requirements()
     deploy_gunicorn(settings, secret_key)
-    #deploy_supervisor()
     deploy_nginx()
     restart()
 
