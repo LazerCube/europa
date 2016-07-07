@@ -43,13 +43,13 @@ def remove_software():
     sudo('apt-get autoremove')
 
 def create_database():
-    sudo('su - postgres')
-    run('psql')
-    run('CREATE DATABASE {0}'.format(PROJECT_NAME))
-    run("CREATE USER {0} WITH PASSWORD \'{1}\';".format(DATABASE_USER, DATABASE_PASSWORD))
-    run('GRANT ALL PRIVILEGES ON DATABASE {0} TO {1};'.format(PROJECT_NAME, DATABASE_USER))
-    run('\q')
-    run('exit')
+    with settings(sudo_user='postgres')
+        run('psql')
+        run('CREATE DATABASE {0}'.format(PROJECT_NAME))
+        run("CREATE USER {0} WITH PASSWORD \'{1}\';".format(DATABASE_USER, DATABASE_PASSWORD))
+        run('GRANT ALL PRIVILEGES ON DATABASE {0} TO {1};'.format(PROJECT_NAME, DATABASE_USER))
+        run('\q')
+        run('exit')
 
 def install_myproject(origin=ORIGIN_DIR):
     run('git clone -b master {0} {1}'.format(origin, BASE_DIR))
@@ -112,8 +112,8 @@ def manage(command=''):
 def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
     upgrade_system()
     install_software()
-    install_myproject(origin)
     create_database()
+    install_myproject(origin)
     create_virtualenv()
     deploy_requirements()
     deploy_gunicorn(settings, secret_key)
