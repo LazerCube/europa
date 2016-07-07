@@ -102,16 +102,16 @@ def reboot():
     print('::Continuing with install...')
 
 def start():
-    sudo("supervisorctl start myproject")
-    sudo("service nginx start")
+    sudo("systemctl start gunicorn")
+    sudo("systemctl start nginx")
 
 def stop():
-    sudo("supervisorctl stop myproject")
-    sudo("service nginx stop")
+    sudo("systemctl stop gunicorn")
+    sudo("systemctl stop nginx")
 
 def restart():
-    sudo("supervisorctl restart myproject")
-    sudo("service nginx restart")
+    sudo("systemctl restart gunicorn")
+    sudo("systemctl restart nginx")
 
 def manage(command=''):
     with prefix('workon myproject'):
