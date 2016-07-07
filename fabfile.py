@@ -33,13 +33,14 @@ def upgrade_system():
 
 def install_software():
     sudo('apt-get install -y git nginx python-dev python-pip libpq-dev postgresql postgresql-contrib')
-    sudo('pip install -U virtualenvwrapper')
+    run('pip install --user virtualenv')
+    run('pip install --user virtualenvwrapper')
     append(join(HOME_DIR, '.bash_profile'), ('export WORKON_HOME={0}/.virtualenvs'.format(HOME_DIR), 'source /usr/local/bin/virtualenvwrapper.sh'))
 
 def remove_software():
     run('rm -rf {0}'.format(join(HOME_DIR, '.bash_profile')))
     sudo('pip uninstall virtualenvwrapper')
-    sudo('apt-get purge -y nginx python-dev python-pip supervisor')
+    sudo('apt-get purge -y nginx python-dev python-pip libpq-dev postgresql postgresql-contrib')
     sudo('apt-get autoremove')
 
 def create_database():
