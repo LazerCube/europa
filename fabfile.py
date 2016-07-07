@@ -43,13 +43,9 @@ def remove_software():
     sudo('apt-get autoremove')
 
 def create_database():
-    with settings(sudo_user='postgres'):
-        run('psql')
-        run('CREATE DATABASE {0}'.format(PROJECT_NAME))
-        run("CREATE USER {0} WITH PASSWORD \'{1}\';".format(DATABASE_USER, DATABASE_PASSWORD))
-        run('GRANT ALL PRIVILEGES ON DATABASE {0} TO {1};'.format(PROJECT_NAME, DATABASE_USER))
-        run('\q')
-        run('exit')
+    sudo('psql -c "CREATE DATABASE %s;"' % (PROJECT_NAME), user='postgres')
+    sudo('psql -c "CREATE USER %s WITH PASSWORD \'%s\';"' % (DATABASE_USER, DATABASE_PASSWORD), user='postgres')
+    sudo('psql -c "GRANT ALL PRIVILEGES ON DATABASE %s TO %s;"' % (PROJECT_NAME, DATABASE_USER), user='postgres')
 
 def install_myproject(origin=ORIGIN_DIR):
     run('git clone -b master {0} {1}'.format(origin, BASE_DIR))
