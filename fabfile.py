@@ -117,7 +117,7 @@ def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
     create_virtualenv()
     deploy_requirements()
     deploy_gunicorn(settings, secret_key)
-    deploy_supervisor()
+    #deploy_supervisor()
     deploy_nginx()
     start()
 
@@ -133,7 +133,7 @@ def full_upgrade(settings=None, secret_key=None):
     upgrade_myproject()
     deploy_requirements()
     deploy_gunicorn(settings, secret_key)
-    deploy_supervisor()
+    #deploy_supervisor()
     deploy_nginx()
     restart()
 
