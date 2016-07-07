@@ -43,7 +43,7 @@ def remove_software():
     sudo('apt-get autoremove')
 
 def create_database():
-    with settings(sudo_user='postgres')
+    with settings(sudo_user='postgres'):
         run('psql')
         run('CREATE DATABASE {0}'.format(PROJECT_NAME))
         run("CREATE USER {0} WITH PASSWORD \'{1}\';".format(DATABASE_USER, DATABASE_PASSWORD))
