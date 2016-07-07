@@ -1,12 +1,13 @@
 [Unit]
 Description=gunicorn daemon
+Requires=gunicorn.socket
 After=network.target
 
-[Service]
+[Service]cd
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/myproject/myproject
-ExecStart=/home/ubuntu/.bash_profile --workers 3 --bind unix:/home/ubuntu/myproject/myproject/myproject.sock config.wsgi:application
+ExecStart=/home/ubuntu/.virtualenvs/myproject/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/myproject/myproject/myproject.sock config.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
