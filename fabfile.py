@@ -1,7 +1,7 @@
 from posixpath import join
 
 from fabric.operations import local as lrun, run
-from fabric.api import cd, env, prefix, sudo, reboot
+from fabric.api import cd, env, prefix, sudo, reboot, settings
 from fabric.contrib.files import append
 
 import os
@@ -92,9 +92,10 @@ def deploy_nginx():
     sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-available/myproject')))
     sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-enabled/default')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/nginx.conf'), join(NGINX_CONFIG, 'sites-available/myproject')))
-    sudo('sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled')
-    sudo('sudo nginx -t')
-    sudo('sudo systemctl restart nginx')
+    with settings(warn_only=True):
+        sudo('ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled')
+    sudo('nginx -t')
+    sudo('systemctl restart nginx')
 
 def reboot():
     print('::Rebooting to apply new changes...')
