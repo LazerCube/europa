@@ -1,7 +1,7 @@
 from posixpath import join
 
 from fabric.operations import local as lrun, run
-from fabric.api import cd, env, prefix, sudo
+from fabric.api import cd, env, prefix, sudo, reboot
 from fabric.contrib.files import append
 
 import os
@@ -19,8 +19,10 @@ def remote():
 PROJECT_NAME = 'myproject'
 HOME_DIR = '/home/ubuntu'
 BASE_DIR = join(HOME_DIR, 'myproject')
+
 SUPERVISOR_CONFIG = '/etc/supervisor'
 NGINX_CONFIG = '/etc/nginx'
+SYSTEMD_CONFIG = '/etc/systemd/system'
 
 DATABASE_USER = 'myprojectuser'
 DATABASE_PASSWORD = 'randomtemppassword'
@@ -69,7 +71,8 @@ def deploy_requirements():
         run('pip install -r {0}'.format(join(BASE_DIR,'requirements/production.txt'))) #should pick based on env
 
 def deploy_gunicorn(settings=None, secret_key=None):
-    sudo('chmod u+x {0}'.format(join(BASE_DIR, 'bin/gunicorn_start')))
+    sudo('rm -rf {0}'.format(join(SYSTEMD_CONFIG, 'gunicorn.service')))
+    sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'bin/gunicorn.service'), join(SYSTEMD_CONFIG, 'gunicorn.service')))
     if settings:
         append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'myproject.config.settings.{0}\''.format(settings))
     if secret_key:
@@ -77,6 +80,8 @@ def deploy_gunicorn(settings=None, secret_key=None):
     with prefix('workon myproject'):
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'migrate'))
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'collectstatic'))
+        sudo('systemctl start gunicorn')
+        sudo('systemctl enable gunicorn')
 
 def deploy_supervisor():
     sudo('rm -rf {0}'.format(join(SUPERVISOR_CONFIG, 'conf.d/myproject.conf')))
@@ -84,10 +89,16 @@ def deploy_supervisor():
     sudo('supervisorctl update')
 
 def deploy_nginx():
-    sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'conf.d/myproject.conf')))
+    sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-available/myproject')))
     sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-enabled/default')))
-    sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/nginx.conf'), join(NGINX_CONFIG, 'conf.d/myproject.conf')))
+    sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/nginx.conf'), join(NGINX_CONFIG, 'sites-available/myproject')))
+    sudo('sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled')
     sudo('nginx -s reload')
+
+def reboot():
+    print('::Rebooting to apply new changes...')
+    reboot(300)
+    print('::Continuing with install...')
 
 def start():
     sudo("supervisorctl start myproject")
