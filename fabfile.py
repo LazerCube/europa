@@ -48,6 +48,9 @@ def remove_software():
 def create_database():
     sudo('psql -c "CREATE DATABASE %s;"' % (PROJECT_NAME), user='postgres')
     sudo('psql -c "CREATE USER %s WITH PASSWORD \'%s\';"' % (DATABASE_USER, DATABASE_PASSWORD), user='postgres')
+    sudo('psql -c "ALTER ROLE %s SET client_encoding TO \'utf8\';"' % (DATABASE_USER), user='postgres')
+    sudo('psql -c "ALTER ROLE %s SET default_transaction_isolation TO \'read committed\';"' % (DATABASE_USER), user='postgres')
+    sudo('psql -c "ALTER ROLE %s SET timezone TO \'UTC\';"' % (DATABASE_USER), user='postgres')
     sudo('psql -c "GRANT ALL PRIVILEGES ON DATABASE %s TO %s;"' % (PROJECT_NAME, DATABASE_USER), user='postgres')
 
 def install_myproject(origin=ORIGIN_DIR):
