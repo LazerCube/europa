@@ -103,7 +103,8 @@ def generate_key(secret_key=None):
     return secret_key
 
 def create_key(secret_key=None):
-    sudo('echo {0} > /etc/secret_key.txt'.format(generate_key(secret_key)))
+    remove_key()
+    append("/etc/secret_key.txt", "{0}".format(generate_key(secret_key)), use_sudo=True)
 
 def remove_key():
     sudo('rm -rf /etc/secret_key')
@@ -134,7 +135,7 @@ def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
     install_software()
     create_database()
     install_myproject(origin)
-    generate_key(secret_key)
+    create_key(secret_key)
     create_virtualenv()
     deploy_requirements()
     deploy_gunicorn(settings)
@@ -143,7 +144,7 @@ def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
 
 def quick_upgrade(settings=None, secret_key=None):
     upgrade_myproject()
-    generate_key(secret_key)
+    create_key(secret_key)
     deploy_requirements()
     deploy_gunicorn(settings)
     restart()
@@ -152,7 +153,7 @@ def full_upgrade(settings=None, secret_key=None):
     upgrade_system()
     install_software()
     upgrade_myproject()
-    generate_key(secret_key)
+    create_key(secret_key)
     deploy_requirements()
     deploy_gunicorn(settings)
     deploy_nginx()
