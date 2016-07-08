@@ -5,6 +5,8 @@ from fabric.api import cd, env, prefix, sudo, reboot, settings
 from fabric.contrib.files import append
 
 import os
+import random
+import string
 
 env.user = 'ubuntu'
 
@@ -69,15 +71,13 @@ def deploy_requirements():
     with prefix('workon myproject'):
         run('pip install -r {0}'.format(join(BASE_DIR,'requirements/production.txt'))) #should pick based on env
 
-def deploy_gunicorn(settings=None, secret_key=None):
+def deploy_gunicorn(settings=None):
     sudo('rm -rf {0}'.format(join(SYSTEMD_CONFIG, 'gunicorn.service')))
     sudo('rm -rf {0}'.format(join(SYSTEMD_CONFIG, 'gunicorn.socket')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'bin/gunicorn.service'), join(SYSTEMD_CONFIG, 'gunicorn.service')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'bin/gunicorn.socket'), join(SYSTEMD_CONFIG, 'gunicorn.socket')))
     if settings:
-        append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'myproject.config.settings.{0}\''.format(settings))
-    if secret_key:
-        append(join(HOME_DIR, '.bash_profile'), 'export SECRET_KEY=\'{0}\''.format(secret_key))
+        append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'config.settings.{0}\''.format(settings))
     with prefix('workon myproject'):
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'migrate'))
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), 'collectstatic'))
@@ -92,6 +92,18 @@ def deploy_nginx():
         sudo('ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled')
     sudo('nginx -t')
     sudo('systemctl restart nginx')
+
+def generate_key(secret_key=None):
+    if secret_key:
+        return secret_key
+    secret_key = ("".join([random.SystemRandom().choice(string.digits + string.letters + string.punctuation) for i in range(100)]))
+    return secret_key
+
+def create_key(secret_key=None):
+    sudo('echo {0} > /etc/secret_key.txt'.format(generate_key(secret_key)))
+
+def remove_key():
+    sudo('rm -rf /etc/secret_key')
 
 def reboot():
     print('::Rebooting to apply new changes...')
@@ -119,29 +131,33 @@ def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
     install_software()
     create_database()
     install_myproject(origin)
+    generate_key(secret_key)
     create_virtualenv()
     deploy_requirements()
-    deploy_gunicorn(settings, secret_key)
+    deploy_gunicorn(settings)
     deploy_nginx()
     start()
 
 def quick_upgrade(settings=None, secret_key=None):
     upgrade_myproject()
+    generate_key(secret_key)
     deploy_requirements()
-    deploy_gunicorn(settings, secret_key)
+    deploy_gunicorn(settings)
     restart()
 
 def full_upgrade(settings=None, secret_key=None):
     upgrade_system()
     install_software()
     upgrade_myproject()
+    generate_key(secret_key)
     deploy_requirements()
-    deploy_gunicorn(settings, secret_key)
+    deploy_gunicorn(settings)
     deploy_nginx()
     restart()
 
 def full_remove():
     stop()
     remove_virtualenv()
+    remove_key()
     remove_myproject()
     remove_software()
