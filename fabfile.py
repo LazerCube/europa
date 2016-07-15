@@ -8,18 +8,18 @@ import os
 import random
 import string
 
-env.user = 'ubuntu'
-
 def localhost():
+    env.user = 'django'
     env.run = lrun
     env.hosts = ['localhost']
 
 def remote():
+    env.user = 'django'
     env.run = run
-    env.hosts = ['some.remote.host']
+    env.hosts = ['10.0.2.2:2500']
 
 PROJECT_NAME = 'myproject'
-HOME_DIR = '/home/ubuntu'
+HOME_DIR = '/home/{0}'.format(env.user)
 BASE_DIR = join(HOME_DIR, 'myproject')
 
 NGINX_CONFIG = '/etc/nginx'

@@ -63,6 +63,6 @@ service ssh restart
 ## Creating new user
 
 ```
-sudo adduser ubuntu
-sudo gpasswd -a ubuntu sudo
+sudo adduser django
+sudo gpasswd -a django sudo
 ```
