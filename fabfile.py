@@ -131,7 +131,7 @@ def manage(command=''):
     with prefix('workon myproject'):
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), command))
 
-def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None, reboot=false):
+def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None, reboot=False):
     upgrade_system()
     install_software()
     sys_reboot(reboot)
