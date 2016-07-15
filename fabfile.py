@@ -19,7 +19,7 @@ def remote():
     env.hosts = ['10.0.2.2:2500']
 
 PROJECT_NAME = 'myproject'
-HOME_DIR = '/home/{0}'.format(env.user)
+HOME_DIR = '/home/django
 BASE_DIR = join(HOME_DIR, 'myproject')
 
 NGINX_CONFIG = '/etc/nginx'
@@ -29,6 +29,9 @@ DATABASE_USER = 'myprojectuser'
 DATABASE_PASSWORD = 'randomtemppassword'
 
 ORIGIN_DIR = os.path.dirname(os.path.realpath(__file__))
+
+def test():
+    run('echo \'-------------------- Test ------------------------- \'')
 
 def upgrade_system():
     sudo('apt-get update -y')
