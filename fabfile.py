@@ -151,7 +151,7 @@ def quick_upgrade(settings=None, secret_key=None):
     deploy_gunicorn(settings)
     restart()
 
-def full_upgrade(settings=None, secret_key=None, reboot=false):
+def full_upgrade(settings=None, secret_key=None, reboot=False):
     upgrade_system()
     install_software()
     sys_reboot(reboot)
@@ -162,7 +162,7 @@ def full_upgrade(settings=None, secret_key=None, reboot=false):
     deploy_nginx()
     restart()
 
-def full_remove(reboot=false):
+def full_remove(reboot=False):
     stop()
     remove_virtualenv()
     remove_key()
