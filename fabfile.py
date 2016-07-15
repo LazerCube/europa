@@ -93,7 +93,6 @@ def deploy_nginx():
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/nginx.conf'), join(NGINX_CONFIG, 'sites-available/myproject')))
     with settings(warn_only=True):
         sudo('ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled')
-    permissions()
     sudo('nginx -t')
     sudo('systemctl restart nginx')
 
