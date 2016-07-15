@@ -28,7 +28,7 @@ SYSTEMD_CONFIG = '/etc/systemd/system'
 DATABASE_USER = 'myprojectuser'
 DATABASE_PASSWORD = 'randomtemppassword'
 
-ORIGIN_DIR = https://github.com/LazerCube/django_quickstart_fabric.git
+ORIGIN_DIR = "https://github.com/LazerCube/django_quickstart_fabric.git"
 
 def test():
     run('echo \'-------------------- Test ------------------------- \'')
