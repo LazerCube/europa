@@ -87,12 +87,17 @@ def deploy_gunicorn(settings=None):
         sudo('systemctl start gunicorn')
         sudo('systemctl enable gunicorn')
 
+def permissions():
+    sudo('sudo usermod -a -G django nginx')
+    run('chmod 710 /home/django')
+
 def deploy_nginx():
     sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-available/myproject')))
     sudo('rm -rf {0}'.format(join(NGINX_CONFIG, 'sites-enabled/default')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/nginx.conf'), join(NGINX_CONFIG, 'sites-available/myproject')))
     with settings(warn_only=True):
         sudo('ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled')
+    permissions()
     sudo('nginx -t')
     sudo('systemctl restart nginx')
 

@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=ubuntu
-Group=ubuntu
+Group=nginx
 WorkingDirectory=/home/ubuntu/myproject/myproject
 ExecStart=/home/ubuntu/.virtualenvs/myproject/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/myproject/myproject/config/myproject.sock config.wsgi:application
 
