@@ -19,7 +19,7 @@ def remote():
     env.hosts = ['10.0.2.2:2500']
 
 PROJECT_NAME = 'myproject'
-HOME_DIR = '/home/django
+HOME_DIR = '/home/django'
 BASE_DIR = join(HOME_DIR, 'myproject')
 
 NGINX_CONFIG = '/etc/nginx'
