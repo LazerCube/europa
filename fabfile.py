@@ -30,9 +30,6 @@ DATABASE_PASSWORD = 'randomtemppassword'
 
 ORIGIN_DIR = "https://github.com/LazerCube/django_quickstart_fabric.git"
 
-def test():
-    run('echo \'-------------------- Test ------------------------- \'')
-
 def upgrade_system():
     sudo('apt-get update -y')
     sudo('apt-get upgrade -y')
@@ -112,10 +109,11 @@ def create_key(secret_key=None):
 def remove_key():
     sudo('rm -rf /etc/secret_key')
 
-def reboot():
-    print('::Rebooting to apply new changes...')
-    reboot(300)
-    print('::Continuing with install...')
+def sys_reboot(reboot=False):
+    if reboot:
+        print('::Rebooting to apply new changes...')
+        reboot(200)
+        print('::Continuing with fabric...')
 
 def start():
     sudo("systemctl start gunicorn")
@@ -133,9 +131,10 @@ def manage(command=''):
     with prefix('workon myproject'):
         run('python {0} {1}'.format(join(BASE_DIR, 'myproject/manage.py'), command))
 
-def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None):
+def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None, reboot=false):
     upgrade_system()
     install_software()
+    sys_reboot(reboot)
     create_database()
     install_myproject(origin)
     create_key(secret_key)
@@ -152,9 +151,10 @@ def quick_upgrade(settings=None, secret_key=None):
     deploy_gunicorn(settings)
     restart()
 
-def full_upgrade(settings=None, secret_key=None):
+def full_upgrade(settings=None, secret_key=None, reboot=false):
     upgrade_system()
     install_software()
+    sys_reboot(reboot)
     upgrade_myproject()
     create_key(secret_key)
     deploy_requirements()
@@ -162,9 +162,10 @@ def full_upgrade(settings=None, secret_key=None):
     deploy_nginx()
     restart()
 
-def full_remove():
+def full_remove(reboot=false):
     stop()
     remove_virtualenv()
     remove_key()
     remove_myproject()
     remove_software()
+    reboot(reboot)
