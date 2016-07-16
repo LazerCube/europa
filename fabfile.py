@@ -72,13 +72,11 @@ def remove_virtualenv():
 
 def deploy_requirements():
     with prefix('workon myproject'):
-        run('pip install -r {0}'.format(join(BASE_DIR,'requirements/production.txt'))) #should pick based on env
+        run('pip install -r {0}'.format(join(BASE_DIR,'requirements/production.txt')))
 
 def deploy_gunicorn(settings=None):
     sudo('rm -rf {0}'.format(join(SYSTEMD_CONFIG, 'gunicorn.service')))
-    #sudo('rm -rf {0}'.format(join(SYSTEMD_CONFIG, 'gunicorn.socket')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'bin/gunicorn.service'), join(SYSTEMD_CONFIG, 'gunicorn.service')))
-    #sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'bin/gunicorn.socket'), join(SYSTEMD_CONFIG, 'gunicorn.socket')))
     if settings:
         append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'config.settings.{0}\''.format(settings))
     with prefix('workon myproject'):
