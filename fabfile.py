@@ -8,15 +8,19 @@ import os
 import random
 import string
 
+
+# Config for local system
 def localhost():
     env.user = 'django'
     env.run = lrun
     env.hosts = ['localhost']
 
+# Config for remote system
 def remote():
     env.user = 'django'
     env.run = run
     env.hosts = ['192.168.2.48:2500']
+    env.use_ssh_config = True
 
 PROJECT_NAME = 'myproject'
 HOME_DIR = '/home/django'
