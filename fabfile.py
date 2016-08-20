@@ -16,7 +16,7 @@ def localhost():
 def remote():
     env.user = 'django'
     env.run = run
-    env.hosts = ['10.0.2.2:2500']
+    env.hosts = ['192.168.2.48:2500']
 
 PROJECT_NAME = 'myproject'
 HOME_DIR = '/home/django'
@@ -80,7 +80,6 @@ def deploy_gunicorn(settings=None):
     if settings:
         append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'config.settings.{0}\''.format(settings))
     with prefix('workon %s' %(PROJECT_NAME)):
-        run('python {0} {1}'.format(join(BASE_DIR, 'project/manage.py'), 'makemigrations'))
         run('python {0} {1}'.format(join(BASE_DIR, 'project/manage.py'), 'migrate'))
         run('python {0} {1}'.format(join(BASE_DIR, 'project/manage.py'), 'collectstatic'))
         sudo('systemctl start gunicorn')
