@@ -1,5 +1,5 @@
 
-Django Quickstart - Using fabric, NGNIX and Gunicorn
+Django Quickstart - Using fabric, Nginx and Gunicorn
 ====================================================
 
 A git repository to help you get up and running quickly with a Django 1.9 project and fabric, to automate administration task on a server. This repository can turn a clean install of a Debian-based Linux OS into a working web server  capable of serving a Django 1.9 project with only minimal configuring and pre-setup.
