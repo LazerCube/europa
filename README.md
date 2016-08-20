@@ -145,25 +145,9 @@ Reload SSH
 service ssh restart
 ```
 
-Basic Firewall
---------------
-
-SSH - `sudo ufw allow 25000/tcp`
-
-If you plan on running a conventional HTTP web server, you will need to allow access to port 80.
+Test mail service for Fail2ban
+------------------------------
 
 ```
-sudo ufw allow 80/tcp
-```
-
-If you plan to run a web server with SSL/TLS enabled, you should allow traffic to that port as well.
-
-```
-sudo ufw allow 443/tcp
-```
-
-Enable the firewall.
-
-```
-sudo ufw enable
+echo "Subject: test" | sendmail -v me@my-domain.com
 ```

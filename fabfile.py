@@ -40,14 +40,14 @@ def upgrade_system():
     sudo('apt-get upgrade -y')
 
 def install_software():
-    sudo('apt-get install -y git nginx python-dev python-pip libpq-dev postgresql postgresql-contrib')
+    sudo('apt-get install -y git nginx python-dev python-pip libpq-dev postgresql postgresql-contrib fail2ban sendmail iptables-persistent')
     sudo('pip install -U virtualenvwrapper')
     append(join(HOME_DIR, '.bash_profile'), ('export WORKON_HOME={0}/.virtualenvs'.format(HOME_DIR), 'source /usr/local/bin/virtualenvwrapper.sh'))
 
 def remove_software():
     run('rm -rf {0}'.format(join(HOME_DIR, '.bash_profile')))
     sudo('pip uninstall virtualenvwrapper')
-    sudo('apt-get purge -y nginx python-dev python-pip libpq-dev postgresql postgresql-contrib')
+    sudo('apt-get purge -y git nginx python-dev python-pip libpq-dev postgresql postgresql-contrib fail2ban sendmail iptables-persistent')
     sudo('apt-get autoremove')
 
 def create_database():
@@ -101,12 +101,15 @@ def deploy_nginx():
     sudo('systemctl restart nginx')
 
 def deploy_fail2ban():
+    sudo('ufw disable')
     sudo('rm -rf {0}'.format(join(FAIL2_CONFIG, 'jail.local')))
     sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/jail.conf'), join(FAIL2_CONFIG, 'jail.local')))
 
 def deploy_iptables():
     sudo('systemctl stop fail2ban')
-    sudo('service iptables-persistent flush')
+    # Doesn't seem to work in ubuntu server 16.04
+    # sudo('iptables-persistent flush')
+    sudo('netfilter-persistent flush')
     sudo('iptables -A INPUT -i lo -j ACCEPT')
     sudo('iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT')
     sudo('iptables -A INPUT -p tcp --dport 25000 -j ACCEPT')
