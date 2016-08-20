@@ -24,7 +24,7 @@ For Example: `fab remote full_install:"production"` to use your project with its
 Installing fabric
 -----------------
 
-An easy awy of installing Fabric on a fresh install is by using the default operating system package manager `aptitude`.
+An easy way of installing Fabric on a fresh install is by using the default operating system package manager `aptitude`.
 
 ```
 sudo aptitude install fabric
