@@ -19,7 +19,7 @@ fab <localhost/remote> <full_install/full_upgrade/full_upgrade>
 
 When installing for the first time you must define a django config file to use.
 In order to do this put `:"<local/production/staging>"` after the your install command.
-For Example: `fab remote full_install:"production"` to use your project with its production settings.
+For Example: `fab remote full_install:settings="production"` to use your project with its production settings.
 
 Installing fabric
 -----------------
@@ -75,7 +75,7 @@ cat ~/.ssh/id_rsa.pub
 
 This will print your public SSH key, select and copy it to your clipboard. To enable the user of a SSH key to authenticate, you must add the public key to a special file in your user's home directory.
 
-*On the Server*, enter.
+_On the Server_, enter.
 
 ```
 su - django

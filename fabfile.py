@@ -1,7 +1,7 @@
 from posixpath import join
 
 from fabric.operations import local as lrun, run
-from fabric.api import cd, env, prefix, sudo, reboot, settings
+from fabric.api import cd, env, prefix, sudo, settings, reboot as restart_sys
 from fabric.contrib.files import append
 
 import os
@@ -19,8 +19,8 @@ def localhost():
 def remote():
     env.user = 'django'
     env.run = run
-    env.hosts = ['192.168.2.48:2500']
-    env.use_ssh_config = True
+    env.hosts = ['192.168.2.48:25000']
+    env.key_filename=['~/.ssh/id_rsa.pub']
 
 PROJECT_NAME = 'myproject'
 HOME_DIR = '/home/django'
@@ -28,6 +28,7 @@ BASE_DIR = join(HOME_DIR, 'myproject')
 
 NGINX_CONFIG = '/etc/nginx'
 SYSTEMD_CONFIG = '/etc/systemd/system'
+FAIL2_CONFIG = '/etc/fail2ban/'
 
 DATABASE_USER = 'myprojectuser'
 DATABASE_PASSWORD = 'randomtemppassword'
@@ -84,6 +85,7 @@ def deploy_gunicorn(settings=None):
     if settings:
         append(join(HOME_DIR, '.bash_profile'), 'export DJANGO_SETTINGS_MODULE=\'config.settings.{0}\''.format(settings))
     with prefix('workon %s' %(PROJECT_NAME)):
+        run('python {0} {1}'.format(join(BASE_DIR, 'project/manage.py'), 'makemigrations'))
         run('python {0} {1}'.format(join(BASE_DIR, 'project/manage.py'), 'migrate'))
         run('python {0} {1}'.format(join(BASE_DIR, 'project/manage.py'), 'collectstatic'))
         sudo('systemctl start gunicorn')
@@ -97,6 +99,21 @@ def deploy_nginx():
         sudo('ln -s /etc/nginx/sites-available/%s /etc/nginx/sites-enabled' %(PROJECT_NAME))
     sudo('nginx -t')
     sudo('systemctl restart nginx')
+
+def deploy_fail2ban():
+    sudo('rm -rf {0}'.format(join(FAIL2_CONFIG, 'jail.local')))
+    sudo('cp -f {0} {1}'.format(join(BASE_DIR, 'config/jail.conf'), join(FAIL2_CONFIG, 'jail.local')))
+
+def deploy_iptables():
+    sudo('systemctl stop fail2ban')
+    sudo('service iptables-persistent flush')
+    sudo('iptables -A INPUT -i lo -j ACCEPT')
+    sudo('iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT')
+    sudo('iptables -A INPUT -p tcp --dport 25000 -j ACCEPT')
+    sudo('iptables -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT')
+    sudo('iptables -A INPUT -j DROP')
+    sudo('dpkg-reconfigure iptables-persistent')
+    sudo('systemctl start fail2ban')
 
 def generate_key(secret_key=None):
     if secret_key:
@@ -113,19 +130,24 @@ def remove_key():
 
 def sys_reboot(reboot=False):
     if reboot:
-        print('::Rebooting to apply new changes...')
-        reboot(200)
-        print('::Continuing with fabric...')
+        with settings(warn_only=True):
+            print('::Rebooting to apply new changes...')
+            restart_sys(200)
+            print('::Continuing with fabric...')
+
 
 def start():
+    sudo("systemctl start fail2ban")
     sudo("systemctl start gunicorn")
     sudo("systemctl start nginx")
 
 def stop():
-    sudo("systemctl stop gunicorn")
     sudo("systemctl stop nginx")
+    sudo("systemctl stop gunicorn")
+    sudo("systemctl stop fail2ban")
 
 def restart():
+    sudo("systemctl restart fail2ban")
     sudo("systemctl restart gunicorn")
     sudo("systemctl restart nginx")
 
@@ -142,14 +164,17 @@ def full_install(origin=ORIGIN_DIR, settings=None, secret_key=None, reboot=False
     create_key(secret_key)
     create_virtualenv()
     deploy_requirements()
+    deploy_fail2ban()
     deploy_gunicorn(settings)
     deploy_nginx()
+    deploy_iptables()
     start()
 
 def quick_upgrade(settings=None, secret_key=None):
     upgrade_myproject()
     create_key(secret_key)
     deploy_requirements()
+    deploy_fail2ban()
     deploy_gunicorn(settings)
     restart()
 
@@ -160,8 +185,10 @@ def full_upgrade(settings=None, secret_key=None, reboot=False):
     upgrade_myproject()
     create_key(secret_key)
     deploy_requirements()
+    deploy_fail2ban()
     deploy_gunicorn(settings)
     deploy_nginx()
+    deploy_iptables()
     restart()
 
 def full_remove(reboot=False):
