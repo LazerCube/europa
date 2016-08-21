@@ -24,7 +24,7 @@ For Example: `fab remote full_install:settings="production"` to use your project
 Installing fabric
 -----------------
 
-An easy way of installing Fabric on a fresh install is by using the default operating system package manager `aptitude`.
+Fabric needs to be installed on the local machine. An easy way of installing Fabric is by using the default operating system package manager `aptitude`.
 
 ```
 sudo aptitude install fabric
@@ -57,6 +57,12 @@ sudo gpasswd -a django sudo
 ```
 sudo apt-get update
 sudo apt-get install openssh-server
+```
+
+Disable ufw to stop it creating items in iptables
+
+```
+sudo ufw disable
 ```
 
 ###  Adding Public Key Authentication
@@ -109,8 +115,8 @@ Configuring SSH
 Begin by creating a backup of the default config, just in case. Next, open the configuration file with your favorite text editor (for this example we will use nano).
 
 ```
-cp /etc/ssh/sshd_config /etc/ssh/sshd_config_backup
-nano /etc/ssh/sshd_config
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config_backup
+sudo nano /etc/ssh/sshd_config
 ```
 
 Then, change default port number. This is a basic step that helps to keep your server as secure as possible.
