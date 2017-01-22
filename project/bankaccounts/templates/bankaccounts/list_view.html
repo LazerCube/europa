@@ -1,0 +1,11 @@
+{% extends "europa/base.html" %}
+
+{% block content %}
+    <div class="bank-accounts-list">
+        <ul class="unstyled-list">
+            {% for account in bankaccounts %}
+                <li>{{ account.label }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

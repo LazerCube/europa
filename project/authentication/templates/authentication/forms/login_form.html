@@ -1,0 +1,25 @@
+{% load staticfiles %}
+
+{% block form_content %}
+<!-- display the form -->
+<div class="panel panel-default">
+    <form action='{% url 'authentication:login' %}' method="post" class="form-horizontal">
+        <fieldset>
+            <div class="panel-header">
+                <legend>Login</legend>
+            </div>
+            <div class="panel-body">
+                {% csrf_token %}
+                {{ state }}
+                {{ form.username }}
+                {{ form.password }}
+                <button class="btn btn-primary btn-full btn-login" type='submit'>Sign in</button>
+            </div>
+            <div class="panel-footer">
+                <a class="" href="{% url 'authentication:register' %}">Register</a>
+                <a href='#forgot password' class="">Forgot your password</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
