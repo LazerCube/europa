@@ -1,0 +1,39 @@
+{% extends "authentication/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<!-- display the form -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Register</h3>
+    </div>
+    <form action='{% url 'authentication:register' %}' method="post" class="form">
+        <fieldset>
+            <div class="panel-body">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field }}
+                        {% if form.errors %}
+                            {% for error in field.errors %}
+                                <small>{{ error|escape }}</small>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    {% for error in form.non_field_errors %}
+                        <small>{{ error|escape }}</small>
+                    {% endfor %}
+                </div>
+                
+                <button class="btn btn-primary btn-block" type='submit'>Register</button>
+            </div>
+            <div class="panel-footer">
+                <a class="" href="{% url 'authentication:login' %}">Already have an account?</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

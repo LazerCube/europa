@@ -1,7 +1,12 @@
 {% extends "europa/base.html" %}
 
-{% block content %}
-    <!-- display the form -->
-    {% include "authentication/forms/login_form.html" %}
-    <!-- display the form -->
+{% block body %}
+    <body class="winter">
+        <div class="container">
+            <div class="col-lg-4 col-sm-offset-4">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </body>
 {% endblock %}

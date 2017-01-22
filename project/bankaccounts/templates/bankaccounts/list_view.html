@@ -1,11 +1,19 @@
 {% extends "europa/base.html" %}
 
 {% block content %}
+    <div class="jumbotron">
+        <h1> {{ user }}</h1>
+        <p>{{ user.bankaccounts }}</p>
+    </div>
     <div class="bank-accounts-list">
+        {% if bankaccounts %}
         <ul class="unstyled-list">
             {% for account in bankaccounts %}
                 <li>{{ account.label }}</li>
             {% endfor %}
         </ul>
+        {% else %}
+            <p>No Accounts yet</p>
+        {% endif %}
     </div>
 {% endblock %}

@@ -78,4 +78,4 @@ USE_TZ = True
 # Custom Authentication model
 
 AUTH_USER_MODEL = 'authentication.Account'
-LOGIN_URL = 'login/'
+LOGIN_URL = '/login/'
