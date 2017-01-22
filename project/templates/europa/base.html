@@ -1,0 +1,32 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--head-->
+        {% block meta-head %}
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Europa</title>
+        {% endblock %}
+        {% block styles-head %}
+            <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+            <link rel="icon" href="http://lazercube.github.io/web_framework/fonts/favicon.ico" type="image/x-icon"/>
+            <link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css">
+        {% endblock %}
+        {% block js-head %}
+        {% endblock %}
+        <!--endhead-->
+    </head>
+
+    {% block body %}
+        <body>
+            {% include 'europa/includes/header.html' %}
+            <div class="container">
+                {% block content %}{% endblock %}
+                {% include 'europa/includes/footer.html' %}
+            </div>
+        </body>
+    {% endblock %}
+
+</html>
